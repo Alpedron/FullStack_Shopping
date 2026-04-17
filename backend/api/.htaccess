@@ -1,0 +1,6 @@
+RewriteEngine On
+
+RewriteRule ^stores/?$ stores.php [QSA,L]
+RewriteRule ^stores/([0-9]+)/?$ stores.php?id=$1 [QSA,L]
+RewriteRule ^stores/([0-9]+)/items/?$ items.php?store_id=$1 [QSA,L]
+RewriteRule ^items/([0-9]+)/?$ items.php?id=$1 [QSA,L]
