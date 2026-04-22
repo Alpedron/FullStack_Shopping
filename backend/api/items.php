@@ -41,7 +41,8 @@ try {
             exit;
         }
 
-        $store_id = filter_var($data["store_id"] ?? null, FILTER_VALIDATE_INT);
+        // Support store_id from either the JSON body or the rewritten route /stores/{id}/items.
+        $store_id = filter_var($data["store_id"] ?? ($_GET["store_id"] ?? null), FILTER_VALIDATE_INT);
         if ($store_id === false || $store_id <= 0) {
             http_response_code(400);
             echo json_encode(["error" => "Valid store_id is required"]);
@@ -103,7 +104,8 @@ try {
             exit;
         }
 
-        $id = filter_var($data["id"] ?? null, FILTER_VALIDATE_INT);
+        // Support id from either the JSON body or the rewritten route /items/{id}.
+        $id = filter_var($_GET["id"] ?? ($data["id"] ?? null), FILTER_VALIDATE_INT);
         // Validate that the id is a positive integer.
         if ($id === false || $id <= 0) {
             http_response_code(400);
@@ -126,6 +128,21 @@ try {
         $quantity = isset($data["quantity"]) ? (int)$data["quantity"] : $existing["quantity"];
         $checked = isset($data["checked"]) ? (int)$data["checked"] : $existing["checked"];
 
+        if ($name === "") {
+            http_response_code(400);
+            echo json_encode(["error" => "Item name is required"]);
+            exit;
+        }
+
+        if ($quantity <= 0) {
+            http_response_code(400);
+            echo json_encode(["error" => "Quantity must be greater than 0"]);
+            exit;
+        }
+
+        // Normalize checked to only 0 or 1.
+        $checked = $checked === 1 ? 1 : 0;
+
         $stmt = $pdo->prepare("UPDATE items SET name = :name, quantity = :quantity, checked = :checked WHERE id = :id");
         $stmt->execute([
             ":name" => $name,
@@ -136,7 +153,8 @@ try {
 
         echo json_encode([
             "message" => "Item updated successfully",
-            "id" => $id
+            "id" => $id,
+            "checked" => $checked
         ]);
         exit;
     }
