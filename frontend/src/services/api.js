@@ -1,4 +1,4 @@
-const BASE_URL = "http://localhost/FullStack_Shopping/backend/api";
+const BASE_URL = "/ShoppingList/backend/api";
 
 export async function getStores() {
   const response = await fetch(`${BASE_URL}/stores`);
