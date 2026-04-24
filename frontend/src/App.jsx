@@ -9,6 +9,7 @@ import {
   deleteStore,
   deleteItem,
 } from "./services/api";
+import AddStoreModal from "./components/AddStoreModal";
 
 function App() {
   const [screen, setScreen] = useState("lists"); // "lists" | "storeDetail"
@@ -16,6 +17,7 @@ function App() {
   const [selectedStore, setSelectedStore] = useState(null);
   const [items, setItems] = useState([]);
   const [error, setError] = useState("");
+  const [showAddStoreModal, setShowAddStoreModal] = useState(false);
 
   useEffect(() => {
     loadStores();
@@ -42,14 +44,24 @@ function App() {
     }
   }
 
-  async function handleAddStore() {
-    const storeName = window.prompt("Enter store name:");
+  function handleOpenAddStoreModal() {
+    setShowAddStoreModal(true);
+  }
 
-    if (!storeName || !storeName.trim()) return;
+  function handleCloseAddStoreModal() {
+    setShowAddStoreModal(false);
+  }
+
+  async function handleSaveStore(storeName) {
+    if (!storeName || !storeName.trim()) {
+      setError("Please enter a store name.");
+      return;
+    }
 
     try {
       await addStore(storeName.trim());
       setError("");
+      setShowAddStoreModal(false);
       await loadStores();
     } catch (err) {
       setError(err.message);
@@ -195,7 +207,7 @@ function App() {
           </div>
         )}
 
-        <button className="floating-add-btn" onClick={handleAddStore}>
+        <button className="floating-add-btn" onClick={handleOpenAddStoreModal}>
           + Add Store
         </button>
       </div>
@@ -257,7 +269,17 @@ function App() {
     );
   }
 
-  return screen === "lists" ? renderListsScreen() : renderStoreDetailScreen();
+  return (
+    <>
+      {screen === "lists" ? renderListsScreen() : renderStoreDetailScreen()}
+
+      <AddStoreModal
+        isOpen={showAddStoreModal}
+        onClose={handleCloseAddStoreModal}
+        onSave={handleSaveStore}
+      />
+    </>
+  );
 }
 
 export default App;
