@@ -1,3 +1,4 @@
+// ItemList component to display items for the selected store, with checkboxes, quantity editing, and delete buttons
 function ItemList({
   selectedStore,
   items,

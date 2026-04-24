@@ -1,6 +1,8 @@
+// modal component for confirming deletion of a shopping item
 function DeleteItemModal({ item, onClose, onConfirm }) {
   if (!item) return null;
 
+  // close the modal if the user clicks outside the modal box
   function handleOverlayClick(event) {
     if (event.target.classList.contains("modal-overlay")) {
       onClose();

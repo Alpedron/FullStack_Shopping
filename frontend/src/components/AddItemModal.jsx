@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 
+// Modal component for adding a new item to the shopping list
 function AddItemModal({ isOpen, onClose, onSave }) {
   const [itemName, setItemName] = useState("");
   const [quantity, setQuantity] = useState(1);
@@ -13,11 +14,13 @@ function AddItemModal({ isOpen, onClose, onSave }) {
 
   if (!isOpen) return null;
 
+  // validation and call onSave with item name and quantity
   function handleSubmit(event) {
     event.preventDefault();
     onSave(itemName, quantity);
   }
 
+  // close modal if clicking outside the modal box
   function handleOverlayClick(event) {
     if (event.target.classList.contains("modal-overlay")) {
       onClose();

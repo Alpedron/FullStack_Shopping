@@ -1,6 +1,8 @@
+// modal component for confirming deletion of a store and all its items
 function DeleteStoreModal({ store, onClose, onConfirm }) {
   if (!store) return null;
 
+  // close modal if user clicks outside the modal box
   function handleOverlayClick(event) {
     if (event.target.classList.contains("modal-overlay")) {
       onClose();

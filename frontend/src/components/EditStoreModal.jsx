@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 
+// Modal component for editing a store's name
 function EditStoreModal({ store, onClose, onSave }) {
   const [storeName, setStoreName] = useState("");
 
@@ -11,11 +12,13 @@ function EditStoreModal({ store, onClose, onSave }) {
 
   if (!store) return null;
 
+  // handle form submission to save the edited store name
   function handleSubmit(event) {
     event.preventDefault();
     onSave(store.id, storeName);
   }
 
+  // close the modal if the user clicks outside the modal box
   function handleOverlayClick(event) {
     if (event.target.classList.contains("modal-overlay")) {
       onClose();

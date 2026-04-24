@@ -1,3 +1,4 @@
+// import modals and API functions
 import { useEffect, useState } from "react";
 import "./App.css";
 import {
@@ -17,6 +18,8 @@ import AddItemModal from "./components/AddItemModal";
 import EditItemModal from "./components/EditItemModal";
 import DeleteItemModal from "./components/DeleteItemModal";
 
+
+// main App component that manages state and renders screens
 function App() {
   const [screen, setScreen] = useState("lists"); 
   const [stores, setStores] = useState([]);
@@ -34,6 +37,7 @@ function App() {
     loadStores();
   }, []);
 
+  // load stores from API and handle errors
   async function loadStores() {
     try {
       const data = await getStores();
@@ -44,6 +48,7 @@ function App() {
     }
   }
 
+  // load items for a store from API and handle errors
   async function loadItems(storeId) {
     try {
       const data = await getItems(storeId);
@@ -63,6 +68,7 @@ function App() {
     setShowAddStoreModal(false);
   }
 
+  // validation and API call to save new store, then refresh list
   async function handleSaveStore(storeName) {
     if (!storeName || !storeName.trim()) {
       setError("Please enter a store name.");
@@ -79,6 +85,7 @@ function App() {
     }
   }
 
+  // validation and API call to save edited store name, then refresh list
   async function handleSaveStoreEdit(id, newName) {
     if (!newName || !newName.trim()) {
       setError("Please enter a store name.");
@@ -99,12 +106,14 @@ function App() {
     setEditingStore(store);
   }
 
+  // when opening store detail, load items for that store
   async function handleOpenStore(store) {
     setSelectedStore(store);
     setScreen("storeDetail");
     await loadItems(store.id);
   }
 
+  // reset state to go back to lists screen
   function handleBackToLists() {
     setSelectedStore(null);
     setItems([]);
@@ -112,6 +121,7 @@ function App() {
     setError("");
   }
 
+  // validation and API call to save new item, then refresh item list
   async function handleSaveItem(itemName, quantityInput) {
     if (!selectedStore) return;
 
@@ -137,6 +147,7 @@ function App() {
     }
   }
 
+  // toggle checked state of item and update via API, then refresh list
   async function handleToggleChecked(item) {
     try {
       const nextChecked = Number(item.checked) === 1 ? 0 : 1;
@@ -159,6 +170,7 @@ function App() {
     setEditingItem(item);
   }
 
+  // validation and API call to save edited item, then refresh item list
   async function handleSaveItemEdit(item, nameInput, quantityInput) {
     const quantityValue = Number(quantityInput);
 
@@ -188,10 +200,12 @@ function App() {
     }
   }
 
+  // set the store to be deleted, which will open the delete confirmation modal
   function handleDeleteStore(store) {
     setDeletingStore(store);
   }
 
+  // call API to delete store, then refresh list
   async function confirmDeleteStore(store) {
     try {
       await deleteStore(store.id);
@@ -203,6 +217,11 @@ function App() {
     }
   }
 
+  // call API to delete item, then refresh item list
+  function handleDeleteItem(item) {
+    setDeletingItem(item);
+  }
+  // set the item to be deleted, which will open the delete confirmation modal
   async function confirmDeleteItem(item) {
     try {
       await deleteItem(item.id);
@@ -214,11 +233,12 @@ function App() {
     }
   }
 
+  // render the main shopping list screen with store cards and add button
   function renderListsScreen() {
     return (
       <div className="mobile-screen">
         <div className="screen-header">
-          <h1>Shopping List</h1>
+          <h1>Adrianna's Shopping List</h1>
         </div>
 
         {error && <p className="error-message">{error}</p>}
@@ -239,20 +259,40 @@ function App() {
                 {store.name}
               </button>
 
-              <button
-                className="edit-btn"
+             <button
+                className="edit-btn icon-btn"
                 onClick={() => handleEditStore(store)}
                 aria-label={`Edit ${store.name}`}
               >
-                ✏️
+                <svg
+                  className="action-icon"
+                  viewBox="0 0 528.899 528.899"
+                  fill="currentColor"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path d="M328.883,89.125l107.59,107.589l-272.34,272.34L56.604,361.465L328.883,89.125z M518.113,63.177l-47.981-47.981 c-18.543-18.543-48.653-18.543-67.259,0l-45.961,45.961l107.59,107.59l53.611-53.611 C532.495,100.753,532.495,77.559,518.113,63.177z M0.3,512.69c-1.958,8.812,5.998,16.708,14.811,14.565l119.891-29.069 L27.473,390.597L0.3,512.69z" />
+                </svg>
               </button>
 
               <button
-                className="trash-btn"
+                className="trash-btn icon-btn"
                 onClick={() => handleDeleteStore(store)}
                 aria-label={`Delete ${store.name}`}
               >
-                🗑
+                <svg
+                  className="action-icon"
+                  viewBox="0 0 20 20"
+                  fill="transparent"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M9 3h6m-9 3h12M8 6v12m4-12v12m4-12v12M5 6l1 14h12l1-14"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
               </button>
             </div>
             ))}
@@ -266,10 +306,8 @@ function App() {
     );
   }
 
-  function handleDeleteItem(item) {
-    setDeletingItem(item);
-  }
 
+  // render the store detail screen with item cards and add button
   function renderStoreDetailScreen() {
     return (
       <div className="mobile-screen">
@@ -310,12 +348,39 @@ function App() {
                   <span className="item-qty">Qty: {item.quantity}</span>
                 </button>
 
+               <button
+                  className="edit-btn icon-btn"
+                  onClick={() => handleEditItem(item)}
+                  aria-label={`Edit ${item.name}`}
+                >
+                  <svg
+                    className="action-icon"
+                    viewBox="0 0 528.899 528.899"
+                    fill="currentColor"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path d="M328.883,89.125l107.59,107.589l-272.34,272.34L56.604,361.465L328.883,89.125z M518.113,63.177l-47.981-47.981 c-18.543-18.543-48.653-18.543-67.259,0l-45.961,45.961l107.59,107.59l53.611-53.611 C532.495,100.753,532.495,77.559,518.113,63.177z M0.3,512.69c-1.958,8.812,5.998,16.708,14.811,14.565l119.891-29.069 L27.473,390.597L0.3,512.69z" />
+                  </svg>
+                </button>
+
                 <button
-                  className="trash-btn"
+                  className="trash-btn icon-btn"
                   onClick={() => handleDeleteItem(item)}
                   aria-label={`Delete ${item.name}`}
                 >
-                  🗑
+                  <svg
+                    className="action-icon"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                  >
+                    <path
+                      d="M9 3h6m-9 3h12M8 6v12m4-12v12m4-12v12M5 6l1 14h12l1-14"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
                 </button>
               </div>
             ))}

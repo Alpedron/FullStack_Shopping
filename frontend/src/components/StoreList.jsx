@@ -1,3 +1,4 @@
+// component to display list of stores and allow selection
 function StoreList({ stores, selectedStore, onSelectStore }) {
   return (
     <div className="store-list">

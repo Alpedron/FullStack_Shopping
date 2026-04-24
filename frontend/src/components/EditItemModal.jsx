@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 
+// Modal component for editing an item - shows a form with name and quantity inputs, and save/cancel buttons
 function EditItemModal({ item, onClose, onSave }) {
   const [quantity, setQuantity] = useState("");
   const [name, setName] = useState("");
@@ -13,11 +14,13 @@ function EditItemModal({ item, onClose, onSave }) {
 
   if (!item) return null;
 
+  // handle form submission - call onSave with the updated item details
   function handleSubmit(event) {
     event.preventDefault();
     onSave(item, name, quantity);
   }
 
+  // close the modal if the user clicks outside the modal box
   function handleOverlayClick(event) {
     if (event.target.classList.contains("modal-overlay")) {
       onClose();
