@@ -33,6 +33,23 @@ export async function addStore(name) {
   return response.json();
 }
 
+export async function updateStore(id, name) {
+  const response = await fetch(`${BASE_URL}/stores/${id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ id, name }),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.error || "Failed to update store");
+  }
+
+  return response.json();
+}
+
 export async function addItem(storeId, name, quantity) {
   const response = await fetch(`${BASE_URL}/stores/${storeId}/items`, {
     method: "POST",

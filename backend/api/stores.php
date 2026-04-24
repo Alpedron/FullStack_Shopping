@@ -70,7 +70,7 @@ try {
             echo json_encode(["error" => "Invalid JSON body"]);
             exit;
         }
-        $id = filter_var($data["id"] ?? null, FILTER_VALIDATE_INT);
+        $id = filter_var($_GET["id"] ?? ($data["id"] ?? null), FILTER_VALIDATE_INT);
 
         // Validate that the id is a positive integer.
         if ($id === false || $id <= 0) {

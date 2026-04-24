@@ -49,6 +49,21 @@ body {
   line-height: 1;
 }
 
+.edit-btn {
+  border: none;
+  background: transparent;
+  color: #1b3951;
+  font-size: 1.3rem;
+  cursor: pointer;
+  padding: 0.4rem;
+  flex-shrink: 0;
+  margin-left: 0.4rem;
+}
+
+.edit-btn:hover {
+  transform: scale(1.1);
+}
+
 .error-message {
   color: #ff8a80;
   font-size: 0.95rem;

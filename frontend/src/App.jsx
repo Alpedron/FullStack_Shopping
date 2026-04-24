@@ -8,16 +8,21 @@ import {
   updateItem,
   deleteStore,
   deleteItem,
+  updateStore,
 } from "./services/api";
 import AddStoreModal from "./components/AddStoreModal";
+import EditStoreModal from "./components/EditStoreModal";
+import DeleteStoreModal from "./components/DeleteStoreModal";
 
 function App() {
-  const [screen, setScreen] = useState("lists"); // "lists" | "storeDetail"
+  const [screen, setScreen] = useState("lists"); 
   const [stores, setStores] = useState([]);
   const [selectedStore, setSelectedStore] = useState(null);
   const [items, setItems] = useState([]);
   const [error, setError] = useState("");
   const [showAddStoreModal, setShowAddStoreModal] = useState(false);
+  const [editingStore, setEditingStore] = useState(null);
+  const [deletingStore, setDeletingStore] = useState(null);
 
   useEffect(() => {
     loadStores();
@@ -66,6 +71,26 @@ function App() {
     } catch (err) {
       setError(err.message);
     }
+  }
+
+  async function handleSaveStoreEdit(id, newName) {
+    if (!newName || !newName.trim()) {
+      setError("Please enter a store name.");
+      return;
+    }
+
+    try {
+      await updateStore(id, newName.trim());
+      setError("");
+      setEditingStore(null);
+      await loadStores();
+    } catch (err) {
+      setError(err.message);
+    }
+  }
+
+  function handleEditStore(store) {
+    setEditingStore(store);
   }
 
   async function handleOpenStore(store) {
@@ -145,13 +170,15 @@ function App() {
     }
   }
 
-  async function handleDeleteStore(store) {
-    const confirmed = window.confirm(`Delete ${store.name} and all its items?`);
-    if (!confirmed) return;
+  function handleDeleteStore(store) {
+    setDeletingStore(store);
+  }
 
+  async function confirmDeleteStore(store) {
     try {
       await deleteStore(store.id);
       setError("");
+      setDeletingStore(null);
       await loadStores();
     } catch (err) {
       setError(err.message);
@@ -188,21 +215,30 @@ function App() {
         ) : (
           <div className="store-list-mobile">
             {stores.map((store) => (
-              <div key={store.id} className="store-card-row">
-                <button
-                  className="store-card"
-                  onClick={() => handleOpenStore(store)}
-                >
-                  {store.name}
-                </button>
-                <button
-                  className="trash-btn"
-                  onClick={() => handleDeleteStore(store)}
-                  aria-label={`Delete ${store.name}`}
-                >
-                  🗑
-                </button>
-              </div>
+             <div key={store.id} className="store-card-row">
+              <button
+                className="store-card"
+                onClick={() => handleOpenStore(store)}
+              >
+                {store.name}
+              </button>
+
+              <button
+                className="edit-btn"
+                onClick={() => handleEditStore(store)}
+                aria-label={`Edit ${store.name}`}
+              >
+                ✏️
+              </button>
+
+              <button
+                className="trash-btn"
+                onClick={() => handleDeleteStore(store)}
+                aria-label={`Delete ${store.name}`}
+              >
+                🗑
+              </button>
+            </div>
             ))}
           </div>
         )}
@@ -277,6 +313,16 @@ function App() {
         isOpen={showAddStoreModal}
         onClose={handleCloseAddStoreModal}
         onSave={handleSaveStore}
+      />
+      <EditStoreModal
+        store={editingStore}
+        onClose={() => setEditingStore(null)}
+        onSave={handleSaveStoreEdit}
+      />
+      <DeleteStoreModal
+        store={deletingStore}
+        onClose={() => setDeletingStore(null)}
+        onConfirm={confirmDeleteStore}
       />
     </>
   );
