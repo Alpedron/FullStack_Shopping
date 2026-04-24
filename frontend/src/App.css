@@ -35,6 +35,12 @@ body {
   color: white;
 }
 
+.screen-helper-text {
+  margin-left: 0rem;
+  font-size: 1.2rem;
+  color: #e5eeff;
+}
+
 .detail-header {
   gap: 0.9rem;
 }
@@ -273,11 +279,20 @@ body {
   }
 }
 
+
 .modal-box h2 {
   margin-top: 0;
   color: #ffffff;
   font-size: 1.4rem;
 }
+
+.modal-item-name {
+  margin: 0.5rem 0 0;
+  color: #ffffff;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
 
 .modal-box input {
   width: 100%;
@@ -289,6 +304,17 @@ body {
   color: #ffffff;
   font-size: 1rem;
   box-sizing: border-box;
+}
+
+.modal-box input[type="number"] {
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+
+.modal-box input[type="number"]::-webkit-outer-spin-button,
+.modal-box input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
 
 .modal-actions {
@@ -315,4 +341,15 @@ body {
   background: #7db2ff;
   color: #111;
   font-weight: 600;
+}
+
+.modal-warning-text {
+  color: #e5eeff;
+  line-height: 1.5;
+  margin: 0.5rem 0 0;
+}
+
+.danger-modal-btn {
+  background: #ff6b6b !important;
+  color: #ffffff !important;
 }

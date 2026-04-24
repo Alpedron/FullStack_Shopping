@@ -13,6 +13,9 @@ import {
 import AddStoreModal from "./components/AddStoreModal";
 import EditStoreModal from "./components/EditStoreModal";
 import DeleteStoreModal from "./components/DeleteStoreModal";
+import AddItemModal from "./components/AddItemModal";
+import EditItemModal from "./components/EditItemModal";
+import DeleteItemModal from "./components/DeleteItemModal";
 
 function App() {
   const [screen, setScreen] = useState("lists"); 
@@ -23,6 +26,9 @@ function App() {
   const [showAddStoreModal, setShowAddStoreModal] = useState(false);
   const [editingStore, setEditingStore] = useState(null);
   const [deletingStore, setDeletingStore] = useState(null);
+  const [showAddItemModal, setShowAddItemModal] = useState(false);
+  const [editingItem, setEditingItem] = useState(null);
+  const [deletingItem, setDeletingItem] = useState(null);
 
   useEffect(() => {
     loadStores();
@@ -106,16 +112,25 @@ function App() {
     setError("");
   }
 
-  async function handleAddItem() {
+  async function handleSaveItem(itemName, quantityInput) {
     if (!selectedStore) return;
 
-    const itemName = window.prompt("Enter item name:");
+    const quantityValue = Number(quantityInput);
 
-    if (!itemName || !itemName.trim()) return;
+    if (!itemName || !itemName.trim()) {
+      setError("Please enter an item name.");
+      return;
+    }
+
+    if (!Number.isInteger(quantityValue) || quantityValue <= 0) {
+      setError("Please enter a valid quantity greater than 0.");
+      return;
+    }
 
     try {
-      await addItem(selectedStore.id, itemName.trim(), 1);
+      await addItem(selectedStore.id, itemName.trim(), quantityValue);
       setError("");
+      setShowAddItemModal(false);
       await loadItems(selectedStore.id);
     } catch (err) {
       setError(err.message);
@@ -140,15 +155,17 @@ function App() {
     }
   }
 
-  async function handleEditItem(item) {
-    const quantityInput = window.prompt(
-      `Update quantity for ${item.name}:`,
-      item.quantity
-    );
+  function handleEditItem(item) {
+    setEditingItem(item);
+  }
 
-    if (quantityInput === null) return;
-
+  async function handleSaveItemEdit(item, nameInput, quantityInput) {
     const quantityValue = Number(quantityInput);
+
+    if (!nameInput || !nameInput.trim()) {
+      setError("Item name is required.");
+      return;
+    }
 
     if (!Number.isInteger(quantityValue) || quantityValue <= 0) {
       setError("Please enter a valid quantity greater than 0.");
@@ -159,11 +176,12 @@ function App() {
       await updateItem(
         item.id,
         Number(item.checked),
-        item.name,
+        nameInput.trim(),
         quantityValue
       );
 
       setError("");
+      setEditingItem(null);
       await loadItems(selectedStore.id);
     } catch (err) {
       setError(err.message);
@@ -185,13 +203,11 @@ function App() {
     }
   }
 
-  async function handleDeleteItem(item) {
-    const confirmed = window.confirm(`Delete ${item.name}?`);
-    if (!confirmed) return;
-
+  async function confirmDeleteItem(item) {
     try {
       await deleteItem(item.id);
       setError("");
+      setDeletingItem(null);
       await loadItems(selectedStore.id);
     } catch (err) {
       setError(err.message);
@@ -250,6 +266,10 @@ function App() {
     );
   }
 
+  function handleDeleteItem(item) {
+    setDeletingItem(item);
+  }
+
   function renderStoreDetailScreen() {
     return (
       <div className="mobile-screen">
@@ -259,6 +279,10 @@ function App() {
           </button>
           <h1>{selectedStore?.name}</h1>
         </div>
+
+        <p className="screen-helper-text">
+          Click on item to edit name/quantity
+        </p>
 
         {error && <p className="error-message">{error}</p>}
 
@@ -298,7 +322,7 @@ function App() {
           </div>
         )}
 
-        <button className="floating-add-btn" onClick={handleAddItem}>
+        <button className="floating-add-btn" onClick={() => setShowAddItemModal(true)}>
           + Add
         </button>
       </div>
@@ -323,6 +347,21 @@ function App() {
         store={deletingStore}
         onClose={() => setDeletingStore(null)}
         onConfirm={confirmDeleteStore}
+      />
+      <AddItemModal
+        isOpen={showAddItemModal}
+        onClose={() => setShowAddItemModal(false)}
+        onSave={handleSaveItem}
+      />
+      <EditItemModal
+        item={editingItem}
+        onClose={() => setEditingItem(null)}
+        onSave={handleSaveItemEdit}
+      />
+      <DeleteItemModal
+        item={deletingItem}
+        onClose={() => setDeletingItem(null)}
+        onConfirm={confirmDeleteItem}
       />
     </>
   );
