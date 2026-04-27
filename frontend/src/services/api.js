@@ -1,111 +1,84 @@
 const BASE_URL = "/ShoppingList/backend/api";
 
-export async function getStores() {
-  const response = await fetch(`${BASE_URL}/stores`);
-  if (!response.ok) {
-    throw new Error("Failed to fetch stores");
+async function handleResponse(response) {
+  const text = await response.text();
+
+  let data;
+  try {
+    data = JSON.parse(text);
+  } catch {
+    throw new Error("Server did not return valid JSON.");
   }
-  return response.json();
+
+  if (!response.ok) {
+    throw new Error(data.error || "Request failed");
+  }
+
+  return data;
+}
+
+export async function getStores() {
+  const response = await fetch(`${BASE_URL}/stores.php`);
+  return handleResponse(response);
 }
 
 export async function getItems(storeId) {
-  const response = await fetch(`${BASE_URL}/stores/${storeId}/items`);
-  if (!response.ok) {
-    throw new Error("Failed to fetch items");
-  }
-  return response.json();
+  const response = await fetch(`${BASE_URL}/items.php?store_id=${storeId}`);
+  return handleResponse(response);
 }
 
 export async function addStore(name) {
-  const response = await fetch(`${BASE_URL}/stores`, {
+  const response = await fetch(`${BASE_URL}/stores.php`, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ name }),
   });
 
-  if (!response.ok) {
-    const errorData = await response.json();
-    throw new Error(errorData.error || "Failed to add store");
-  }
-
-  return response.json();
+  return handleResponse(response);
 }
 
 export async function updateStore(id, name) {
-  const response = await fetch(`${BASE_URL}/stores/${id}`, {
+  const response = await fetch(`${BASE_URL}/stores.php?id=${id}`, {
     method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-    },
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ id, name }),
   });
 
-  if (!response.ok) {
-    const errorData = await response.json();
-    throw new Error(errorData.error || "Failed to update store");
-  }
-
-  return response.json();
-}
-
-export async function addItem(storeId, name, quantity) {
-  const response = await fetch(`${BASE_URL}/stores/${storeId}/items`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ name, quantity }),
-  });
-
-  if (!response.ok) {
-    const errorData = await response.json();
-    throw new Error(errorData.error || "Failed to add item");
-  }
-
-  return response.json();
-}
-
-export async function updateItem(id, checked, name, quantity) {
-  const response = await fetch(`${BASE_URL}/items/${id}`, {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ checked, name, quantity }),
-  });
-
-  if (!response.ok) {
-    const errorData = await response.json();
-    throw new Error(errorData.error || "Failed to update item");
-  }
-
-  return response.json();
-}
-
-export async function deleteItem(id) {
-  const response = await fetch(`${BASE_URL}/items/${id}`, {
-    method: "DELETE",
-  });
-
-  if (!response.ok) {
-    const errorData = await response.json();
-    throw new Error(errorData.error || "Failed to delete item");
-  }
-
-  return response.json();
+  return handleResponse(response);
 }
 
 export async function deleteStore(id) {
-  const response = await fetch(`${BASE_URL}/stores/${id}`, {
+  const response = await fetch(`${BASE_URL}/stores.php?id=${id}`, {
     method: "DELETE",
   });
 
-  if (!response.ok) {
-    const errorData = await response.json();
-    throw new Error(errorData.error || "Failed to delete store");
-  }
+  return handleResponse(response);
+}
 
-  return response.json();
+export async function addItem(storeId, name, quantity) {
+  const response = await fetch(`${BASE_URL}/items.php?store_id=${storeId}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ name, quantity }),
+  });
+
+  return handleResponse(response);
+}
+
+export async function updateItem(id, checked, name, quantity) {
+  const response = await fetch(`${BASE_URL}/items.php?id=${id}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ id, checked, name, quantity }),
+  });
+
+  return handleResponse(response);
+}
+
+export async function deleteItem(id) {
+  const response = await fetch(`${BASE_URL}/items.php?id=${id}`, {
+    method: "DELETE",
+  });
+
+  return handleResponse(response);
 }
