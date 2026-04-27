@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 
-// Modal component for adding a new item to the shopping list
+// Modal for adding a new shopping item to the selected store/list.
 function AddItemModal({ isOpen, onClose, onSave }) {
+  // Local form values for the item being created.
   const [itemName, setItemName] = useState("");
   const [quantity, setQuantity] = useState(1);
 
+  // Reset the form whenever the modal closes.
   useEffect(() => {
     if (!isOpen) {
       setItemName("");
@@ -14,13 +16,13 @@ function AddItemModal({ isOpen, onClose, onSave }) {
 
   if (!isOpen) return null;
 
-  // validation and call onSave with item name and quantity
+  // App.jsx handles validation and saving; this only sends the entered values up.
   function handleSubmit(event) {
     event.preventDefault();
     onSave(itemName, quantity);
   }
 
-  // close modal if clicking outside the modal box
+  // Close only when clicking the overlay behind the modal.
   function handleOverlayClick(event) {
     if (event.target.classList.contains("modal-overlay")) {
       onClose();

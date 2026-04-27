@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 
-// Modal component for editing a store's name
+// Modal for editing an existing store/list name.
 function EditStoreModal({ store, onClose, onSave }) {
+  // Local copy of the name so the user can edit before saving.
   const [storeName, setStoreName] = useState("");
 
+  // When a store is selected for editing, prefill the input with its current name.
   useEffect(() => {
     if (store) {
       setStoreName(store.name);
@@ -12,13 +14,13 @@ function EditStoreModal({ store, onClose, onSave }) {
 
   if (!store) return null;
 
-  // handle form submission to save the edited store name
+  // Send the edited name back to App.jsx, where the API update happens.
   function handleSubmit(event) {
     event.preventDefault();
     onSave(store.id, storeName);
   }
 
-  // close the modal if the user clicks outside the modal box
+  // Close only when clicking the overlay behind the modal.
   function handleOverlayClick(event) {
     if (event.target.classList.contains("modal-overlay")) {
       onClose();

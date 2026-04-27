@@ -1,8 +1,9 @@
-// modal component for confirming deletion of a store and all its items
+// Confirmation modal for deleting a store/list and all of its items.
 function DeleteStoreModal({ store, onClose, onConfirm }) {
+  // No selected store means there is nothing to confirm, so do not render a modal.
   if (!store) return null;
 
-  // close modal if user clicks outside the modal box
+  // Close only when clicking the overlay behind the modal.
   function handleOverlayClick(event) {
     if (event.target.classList.contains("modal-overlay")) {
       onClose();
@@ -14,12 +15,12 @@ function DeleteStoreModal({ store, onClose, onConfirm }) {
       <div className="modal-box">
         <h2>Delete list</h2>
 
-        <p style={{ color: "#ccc", marginTop: "0.5rem" }}>
+        <p className="modal-warning-text">
           Are you sure you want to delete{" "}
           <strong>{store.name}</strong>?
         </p>
 
-        <p style={{ color: "#ff8a80", fontSize: "0.9rem", marginTop: "0.5rem" }}>
+        <p className="modal-danger-text">
           This will also delete all items in this list.
         </p>
 
@@ -30,7 +31,7 @@ function DeleteStoreModal({ store, onClose, onConfirm }) {
 
           <button
             type="button"
-            style={{ background: "#ff6b6b", color: "white" }}
+            className="danger-modal-btn"
             onClick={() => onConfirm(store)}
           >
             Delete

@@ -1,8 +1,9 @@
-// modal component for confirming deletion of a shopping item
+// Confirmation modal for deleting one shopping item.
 function DeleteItemModal({ item, onClose, onConfirm }) {
+  // No selected item means there is nothing to confirm, so do not render a modal.
   if (!item) return null;
 
-  // close the modal if the user clicks outside the modal box
+  // Close only when clicking the overlay behind the modal.
   function handleOverlayClick(event) {
     if (event.target.classList.contains("modal-overlay")) {
       onClose();

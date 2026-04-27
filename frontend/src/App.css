@@ -1,3 +1,4 @@
+/* Sets the overall page font, colors, and centers the app shell. */
 body {
   margin: 0;
   font-family: 'Montserrat', sans-serif;
@@ -11,6 +12,7 @@ body {
   min-height: 100vh;
 }
 
+/* Main phone-sized app container used for both the store list and item list screens. */
 .mobile-screen {
   min-height: 100vh;
   width: min(100vw, 650px);
@@ -22,6 +24,7 @@ body {
   position: relative;
 }
 
+/* Top title area for each screen. */
 .screen-header {
   display: flex;
   align-items: center;
@@ -41,10 +44,12 @@ body {
   color: #e5eeff;
 }
 
+/* Adds spacing between the back button and title on the item detail screen. */
 .detail-header {
   gap: 0.9rem;
 }
 
+/* Navigation button used to return from the item list to the store list. */
 .back-btn {
   border: none;
   background: transparent;
@@ -55,6 +60,7 @@ body {
   line-height: 1;
 }
 
+/* Edit button used beside store rows. */
 .edit-btn {
   border: none;
   background: transparent;
@@ -66,16 +72,19 @@ body {
   margin-left: 0.4rem;
 }
 
+/* Gives edit buttons a small hover interaction. */
 .edit-btn:hover {
   transform: scale(1.1);
 }
 
+/* Displays backend or validation errors. */
 .error-message {
   color: #ff8a80;
   font-size: 0.95rem;
   margin: 0 0 1rem;
 }
 
+/* Centered message shown when there are no stores or items yet. */
 .empty-state {
   text-align: center;
   padding: 6rem 1rem 2rem;
@@ -95,6 +104,7 @@ body {
   color: #e5eeff;
 }
 
+/* Stacks store cards and item rows with consistent spacing. */
 .store-list-mobile,
 .item-list-mobile {
   display: flex;
@@ -102,6 +112,7 @@ body {
   gap: 0.9rem;
 }
 
+/* White rounded row that represents one store in the store list. */
 .store-card-row {
   display: flex;
   align-items: center;
@@ -111,11 +122,13 @@ body {
   padding: 1.15rem 1.2rem;
 }
 
+/* Highlights a store row when the user hovers over it. */
 .store-card-row:hover {
   background: #c8dafb;
   cursor: pointer;
 }
 
+/* Main clickable store name area inside each store row. */
 .store-card {
   border: none;
   background: transparent;
@@ -128,6 +141,7 @@ body {
   flex: 1;
 }
 
+/* Shared square icon button styling for row actions. */
 .icon-btn {
   width: 40px;
   height: 40px;
@@ -142,6 +156,7 @@ body {
   cursor: pointer;
 }
 
+/* Controls the displayed SVG/icon size inside action buttons. */
 .action-icon {
   width: 22px;
   height: 22px;
@@ -149,6 +164,7 @@ body {
 
 }
 
+/* Item row layout for the shopping list screen. */
 .item-card {
   display: flex;
   align-items: center;
@@ -162,6 +178,7 @@ body {
   justify-content: space-between;
 }
 
+/* Groups the check circle and item text together on the left side. */
 .item-left {
   display: flex;
   align-items: center;
@@ -169,6 +186,7 @@ body {
   flex: 1;
 }
 
+/* Circular checkbox-style button used to mark an item complete. */
 .item-radio {
   width: 34px;
   height: 34px;
@@ -186,11 +204,13 @@ body {
   padding: 0;
 }
 
+/* Completed state for checked shopping items. */
 .item-radio.checked {
   background: green;
   color: #111;
 }
 
+/* Clickable item name area, including the optional quantity text. */
 .item-name-btn {
   flex: 1;
   border: none;
@@ -207,17 +227,20 @@ body {
   overflow: hidden;
 }
 
+/* Smaller quantity label shown below the item name. */
 .item-qty {
   font-size: 0.95rem;
   color: #96d0ff;
   font-weight: 400;
 }
 
+/* Applies completed-item styling to item text. */
 .crossed-out {
   text-decoration: line-through;
   color: #96d0ff;
 }
 
+/* Fixed add button that stays near the bottom of the screen. */
 .floating-add-btn {
   position: fixed;
   left: 50%;
@@ -236,10 +259,12 @@ body {
   box-shadow: 0 10px 24px rgba(0, 0, 0, 0.25);
 }
 
+/* Hover state for the add button. */
 .floating-add-btn:hover {
   background: #96d0ff;
 }
 
+/* Delete button styling for store and item rows. */
 .trash-btn {
   border: none;
   background: transparent;
@@ -251,11 +276,13 @@ body {
   margin-left: 0.5rem;
 }
 
+/* Makes delete buttons feel interactive and more urgent on hover. */
 .trash-btn:hover {
   color: #ff3b3b;
   transform: scale(1.1);
 }
 
+/* On wider screens, the mobile app shell becomes a rounded centered panel. */
 @media (min-width: 768px) {
   .mobile-screen {
     border-radius: 24px;
@@ -266,6 +293,7 @@ body {
 }
 
 /* ===== Modal Styles ===== */
+/* Full-screen dimmed overlay behind add, edit, and delete dialogs. */
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -278,6 +306,7 @@ body {
   backdrop-filter: blur(3px);
 }
 
+/* Dark modal panel that holds form fields and action buttons. */
 .modal-box {
   width: 100%;
   max-width: 420px;
@@ -288,6 +317,7 @@ body {
   animation: modalPop 0.2s ease-out;
 }
 
+/* Small pop-in animation when a modal opens. */
 @keyframes modalPop {
   from {
     opacity: 0;
@@ -301,12 +331,14 @@ body {
 }
 
 
+/* Modal heading text. */
 .modal-box h2 {
   margin-top: 0;
   color: #ffffff;
   font-size: 1.4rem;
 }
 
+/* Item name shown inside delete confirmation modals. */
 .modal-item-name {
   margin: 0.5rem 0 0;
   color: #ffffff;
@@ -315,6 +347,7 @@ body {
 }
 
 
+/* Text and number inputs inside modal forms. */
 .modal-box input {
   width: 100%;
   padding: 0.9rem 1rem;
@@ -327,6 +360,7 @@ body {
   box-sizing: border-box;
 }
 
+/* Removes browser number input spinner styling for a cleaner modal input. */
 .modal-box input[type="number"] {
   appearance: textfield;
   -moz-appearance: textfield;
@@ -338,12 +372,14 @@ body {
   margin: 0;
 }
 
+/* Places modal action buttons side by side. */
 .modal-actions {
   display: flex;
   gap: 0.75rem;
   margin-top: 1.2rem;
 }
 
+/* Shared layout for cancel, save, and delete buttons in modals. */
 .modal-actions button {
   flex: 1;
   padding: 0.85rem 1rem;
@@ -353,23 +389,34 @@ body {
   cursor: pointer;
 }
 
+/* Secondary/cancel modal action. */
 .modal-actions button:first-child {
   background: #2e2e2e;
   color: #ffffff;
 }
 
+/* Primary/save modal action. */
 .modal-actions button:last-child {
   background: #7db2ff;
   color: #111;
   font-weight: 600;
 }
 
+/* Supporting warning copy for delete confirmation modals. */
 .modal-warning-text {
   color: #e5eeff;
   line-height: 1.5;
   margin: 0.5rem 0 0;
 }
 
+/* Extra warning line for actions that delete related data too. */
+.modal-danger-text {
+  color: #ff8a80;
+  font-size: 0.9rem;
+  margin: 0.5rem 0 0;
+}
+
+/* Red destructive action button used for delete confirmations. */
 .danger-modal-btn {
   background: #ff6b6b !important;
   color: #ffffff !important;

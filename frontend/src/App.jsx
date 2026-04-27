@@ -1,4 +1,4 @@
-// import modals and API functions
+// React hooks, page styles, backend API helpers, and modal components.
 import { useEffect, useState } from "react";
 import "./App.css";
 import {
@@ -17,27 +17,37 @@ import DeleteStoreModal from "./components/DeleteStoreModal";
 import AddItemModal from "./components/AddItemModal";
 import EditItemModal from "./components/EditItemModal";
 import DeleteItemModal from "./components/DeleteItemModal";
+import EmptyState from "./components/EmptyState";
 
-
-// main App component that manages state and renders screens
+// Main App component
 function App() {
-  const [screen, setScreen] = useState("lists"); 
+  // Controls which screen is visible: the store list or one store's item detail view.
+  const [screen, setScreen] = useState("lists");
+
+  // Data loaded from the backend.
   const [stores, setStores] = useState([]);
   const [selectedStore, setSelectedStore] = useState(null);
   const [items, setItems] = useState([]);
+
+  // Shared error message shown near the top of the current screen.
   const [error, setError] = useState("");
+
+  // Store modal state. A true/null value tells React which modal should be open.
   const [showAddStoreModal, setShowAddStoreModal] = useState(false);
   const [editingStore, setEditingStore] = useState(null);
   const [deletingStore, setDeletingStore] = useState(null);
+
+  // Item modal state for adding, editing, and confirming delete actions.
   const [showAddItemModal, setShowAddItemModal] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
   const [deletingItem, setDeletingItem] = useState(null);
 
+  // Load the store list once when the app first opens.
   useEffect(() => {
     loadStores();
   }, []);
 
-  // load stores from API and handle errors
+  // Load stores from the API and save them in component state.
   async function loadStores() {
     try {
       const data = await getStores();
@@ -48,7 +58,7 @@ function App() {
     }
   }
 
-  // load items for a store from API and handle errors
+  // Load all items for the selected store. If loading fails, clear stale items.
   async function loadItems(storeId) {
     try {
       const data = await getItems(storeId);
@@ -60,15 +70,17 @@ function App() {
     }
   }
 
+  // Open the add-store modal.
   function handleOpenAddStoreModal() {
     setShowAddStoreModal(true);
   }
 
+  // Close the add-store modal without saving.
   function handleCloseAddStoreModal() {
     setShowAddStoreModal(false);
   }
 
-  // validation and API call to save new store, then refresh list
+  // Validate and save a new store, then refresh the store list.
   async function handleSaveStore(storeName) {
     if (!storeName || !storeName.trim()) {
       setError("Please enter a store name.");
@@ -85,7 +97,7 @@ function App() {
     }
   }
 
-  // validation and API call to save edited store name, then refresh list
+  // Validate and save an edited store name, then refresh the store list.
   async function handleSaveStoreEdit(id, newName) {
     if (!newName || !newName.trim()) {
       setError("Please enter a store name.");
@@ -102,18 +114,19 @@ function App() {
     }
   }
 
+  // Store the selected store in state so the edit modal opens with its values.
   function handleEditStore(store) {
     setEditingStore(store);
   }
 
-  // when opening store detail, load items for that store
+  // Switch to a store's detail screen and load the items that belong to it.
   async function handleOpenStore(store) {
     setSelectedStore(store);
     setScreen("storeDetail");
     await loadItems(store.id);
   }
 
-  // reset state to go back to lists screen
+  // Reset detail-screen state and return to the main store list.
   function handleBackToLists() {
     setSelectedStore(null);
     setItems([]);
@@ -121,7 +134,7 @@ function App() {
     setError("");
   }
 
-  // validation and API call to save new item, then refresh item list
+  // Validate and save a new item for the selected store, then refresh the item list.
   async function handleSaveItem(itemName, quantityInput) {
     if (!selectedStore) return;
 
@@ -147,7 +160,7 @@ function App() {
     }
   }
 
-  // toggle checked state of item and update via API, then refresh list
+  // Toggle an item's checked value in the backend, then reload the item list.
   async function handleToggleChecked(item) {
     try {
       const nextChecked = Number(item.checked) === 1 ? 0 : 1;
@@ -166,11 +179,12 @@ function App() {
     }
   }
 
+  // Store the selected item in state so the edit modal opens with its values.
   function handleEditItem(item) {
     setEditingItem(item);
   }
 
-  // validation and API call to save edited item, then refresh item list
+  // Validate and save item edits while keeping the current checked state.
   async function handleSaveItemEdit(item, nameInput, quantityInput) {
     const quantityValue = Number(quantityInput);
 
@@ -200,12 +214,12 @@ function App() {
     }
   }
 
-  // set the store to be deleted, which will open the delete confirmation modal
+  // Store the selected store in state so the delete confirmation modal opens.
   function handleDeleteStore(store) {
     setDeletingStore(store);
   }
 
-  // call API to delete store, then refresh list
+  // Delete the confirmed store from the backend, then refresh the store list.
   async function confirmDeleteStore(store) {
     try {
       await deleteStore(store.id);
@@ -217,11 +231,12 @@ function App() {
     }
   }
 
-  // call API to delete item, then refresh item list
+  // Store the selected item in state so the delete confirmation modal opens.
   function handleDeleteItem(item) {
     setDeletingItem(item);
   }
-  // set the item to be deleted, which will open the delete confirmation modal
+
+  // Delete the confirmed item from the backend, then refresh the item list.
   async function confirmDeleteItem(item) {
     try {
       await deleteItem(item.id);
@@ -233,7 +248,7 @@ function App() {
     }
   }
 
-  // render the main shopping list screen with store cards and add button
+  // Render the main shopping list screen with store cards and an add-store button.
   function renderListsScreen() {
     return (
       <div className="mobile-screen">
@@ -243,15 +258,17 @@ function App() {
 
         {error && <p className="error-message">{error}</p>}
 
+        {/* Show a friendly empty state until the first store is added. */}
         {stores.length === 0 ? (
-          <div className="empty-state">
-            <p>No store list yet.</p>
-            <p>Tap the add button to create your first store list.</p>
-          </div>
+          <EmptyState
+            title="No store list yet."
+            message="Tap the add button to create your first store list."
+          />
         ) : (
           <div className="store-list-mobile">
             {stores.map((store) => (
              <div key={store.id} className="store-card-row">
+              {/* Opens this store's item list. */}
               <button
                 className="store-card"
                 onClick={() => handleOpenStore(store)}
@@ -259,6 +276,7 @@ function App() {
                 {store.name}
               </button>
 
+             {/* Opens the edit-store modal for this store. */}
              <button
                 className="edit-btn icon-btn"
                 onClick={() => handleEditStore(store)}
@@ -274,6 +292,7 @@ function App() {
                 </svg>
               </button>
 
+              {/* Opens the delete-store confirmation modal for this store. */}
               <button
                 className="trash-btn icon-btn"
                 onClick={() => handleDeleteStore(store)}
@@ -307,7 +326,7 @@ function App() {
   }
 
 
-  // render the store detail screen with item cards and add button
+  // Render the selected store's item screen with check, edit, delete, and add actions.
   function renderStoreDetailScreen() {
     return (
       <div className="mobile-screen">
@@ -324,15 +343,17 @@ function App() {
 
         {error && <p className="error-message">{error}</p>}
 
+        {/* Show a different empty state when this store has no items yet. */}
         {items.length === 0 ? (
-          <div className="empty-state">
-            <p>Let&apos;s plan your shopping.</p>
-            <p>Tap the add button to start adding products.</p>
-          </div>
+          <EmptyState
+            title="Let's plan your shopping."
+            message="Tap the add button to start adding products."
+          />
         ) : (
           <div className="item-list-mobile">
             {items.map((item) => (
               <div key={item.id} className="item-card">
+                {/* Marks the item complete/incomplete. */}
                 <button
                   className={`item-radio ${Number(item.checked) === 1 ? "checked" : ""}`}
                   onClick={() => handleToggleChecked(item)}
@@ -340,6 +361,7 @@ function App() {
                   {Number(item.checked) === 1 ? "✓" : ""}
                 </button>
 
+                {/* Opens the edit-item modal when the item text is clicked. */}
                 <button
                   className={`item-name-btn ${Number(item.checked) === 1 ? "crossed-out" : ""}`}
                   onClick={() => handleEditItem(item)}
@@ -348,6 +370,7 @@ function App() {
                   <span className="item-qty">Qty: {item.quantity}</span>
                 </button>
 
+               {/* Opens the edit-item modal from the pencil icon. */}
                <button
                   className="edit-btn icon-btn"
                   onClick={() => handleEditItem(item)}
@@ -363,6 +386,7 @@ function App() {
                   </svg>
                 </button>
 
+                {/* Opens the delete-item confirmation modal. */}
                 <button
                   className="trash-btn icon-btn"
                   onClick={() => handleDeleteItem(item)}
@@ -396,8 +420,10 @@ function App() {
 
   return (
     <>
+      {/* Pick which main screen to show based on the current screen state. */}
       {screen === "lists" ? renderListsScreen() : renderStoreDetailScreen()}
 
+      {/* Modals live here so they can appear over either main screen. */}
       <AddStoreModal
         isOpen={showAddStoreModal}
         onClose={handleCloseAddStoreModal}

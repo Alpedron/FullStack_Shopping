@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 
-// Modal component for adding a new store (list)
+// Modal for creating a new store/list.
 function AddStoreModal({ isOpen, onClose, onSave }) {
+  // Tracks the text typed into the store name input.
   const [storeName, setStoreName] = useState("");
 
+  // Reset the input whenever the modal closes so it opens clean next time.
   useEffect(() => {
     if (!isOpen) {
       setStoreName("");
@@ -12,20 +14,19 @@ function AddStoreModal({ isOpen, onClose, onSave }) {
 
   if (!isOpen) return null;
 
-  // Handle form submission to save the new store
+  // Stop the browser form refresh and pass the store name up to App.jsx.
   function handleSubmit(event) {
     event.preventDefault();
     onSave(storeName);
   }
 
-  // Close modal when clicking outside the modal box
+  // Close only when the dark overlay is clicked, not when clicking inside the modal box.
   function handleOverlayClick(event) {
     if (event.target.classList.contains("modal-overlay")) {
       onClose();
     }
   }
 
-  
   return (
     <div className="modal-overlay" onClick={handleOverlayClick}>
       <div className="modal-box">

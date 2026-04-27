@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 
-// Modal component for editing an item - shows a form with name and quantity inputs, and save/cancel buttons
+// Modal for editing an existing shopping item's name and quantity.
 function EditItemModal({ item, onClose, onSave }) {
+  // Local form values let the user make changes before committing them.
   const [quantity, setQuantity] = useState("");
   const [name, setName] = useState("");
 
+  // When an item is selected for editing, prefill the form with its current values.
   useEffect(() => {
     if (item) {
       setQuantity(item.quantity);
@@ -14,13 +16,13 @@ function EditItemModal({ item, onClose, onSave }) {
 
   if (!item) return null;
 
-  // handle form submission - call onSave with the updated item details
+  // Send the updated values back to App.jsx, where validation and API saving happen.
   function handleSubmit(event) {
     event.preventDefault();
     onSave(item, name, quantity);
   }
 
-  // close the modal if the user clicks outside the modal box
+  // Close only when clicking the overlay behind the modal.
   function handleOverlayClick(event) {
     if (event.target.classList.contains("modal-overlay")) {
       onClose();
